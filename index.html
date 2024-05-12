@@ -61,7 +61,6 @@
         <button type="button" onclick="shoot()">Schießen</button>
     </form>
     <div class="result hidden" id="result"></div>
-    <button class="hidden" id="restartButton" onclick="restartGame()">Erneut spielen?</button>
 </div>
 
 <script>
@@ -105,14 +104,14 @@
             }
             resultDiv.textContent = message;
             resultDiv.classList.remove('hidden');
-            endGame();
+            setTimeout(resetGame, 15000);
         } else {
             resultDiv.textContent = message;
             resultDiv.classList.remove('hidden');
             setTimeout(() => {
                 resultDiv.classList.add('hidden');
                 form.reset();
-            }, 7000);
+            }, 6000);
         }
     }
 
@@ -121,20 +120,13 @@
         document.getElementById('goalieScore').textContent = goalieScore;
     }
 
-    function endGame() {
-        document.getElementById('shootForm').classList.add('hidden');
-        document.getElementById('restartButton').classList.remove('hidden');
-    }
-
-    function restartGame() {
+    function resetGame() {
         playerScore = 0;
         goalieScore = 0;
         rounds = 0;
         updateScoreboard();
         document.getElementById('shootForm').reset();
         document.getElementById('result').classList.add('hidden');
-        document.getElementById('restartButton').classList.add('hidden');
-        document.getElementById('shootForm').classList.remove('hidden');
     }
 </script>
 
