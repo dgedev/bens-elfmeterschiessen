@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elfmeterschießen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .hidden {
+            display: none;
+        }
+        .scoreboard {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+        .team {
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Elfmeterschießen</h1>
+    <div class="scoreboard">
+        <div class="team">Spieler: <span id="playerScore">0</span></div>
+        <div class="team">Torwart: <span id="goalieScore">0</span></div>
+    </div>
+    <p>Wohin wirst du schießen?</p>
+    <form id="shootForm">
+        <label>
+            <input type="radio" name="direction" value="Links" required> Links
+        </label>
+        <label>
+            <input type="radio" name="direction" value="Mitte"> Mitte
+        </label>
+        <label>
+            <input type="radio" name="direction" value="Rechts"> Rechts
+        </label>
+        <br><br>
+        <button type="button" onclick="shoot()">Schießen</button>
+    </form>
+    <div class="result hidden" id="result"></div>
+    <button class="hidden" id="restartButton" onclick="restartGame()">Erneut spielen?</button>
+</div>
+
+<script>
+    const richtungen = ['Links', 'Mitte', 'Rechts'];
+    let playerScore = 0;
+    let goalieScore = 0;
+    let rounds = 0;
+
+    function zufälligeRichtung() {
+        const zufallsIndex = Math.floor(Math.random() * richtungen.length);
+        return richtungen[zufallsIndex];
+    }
+
+    function shoot() {
+        const form = document.getElementById('shootForm');
+        const resultDiv = document.getElementById('result');
+        const selectedDirection = form.elements['direction'].value;
+
+        const spielerRichtung = zufälligeRichtung();
+        let message = `Der Spieler schießt nach ${spielerRichtung}. `;
+
+        if (selectedDirection === spielerRichtung) {
+            message += 'Du hast gehalten!';
+            goalieScore++;
+        } else {
+            message += 'Tor! Du hast nicht gehalten.';
+            playerScore++;
+        }
+
+        rounds++;
+        updateScoreboard();
+
+        if (rounds >= 5) {
+            message += ` Endstand - Spieler: ${playerScore}, Torwart: ${goalieScore}`;
+            if (playerScore > goalieScore) {
+                message += ' Der Spieler hat gewonnen!';
+            } else if (goalieScore > playerScore) {
+                message += ' Der Torwart hat gewonnen!';
+            } else {
+                message += ' Es ist ein Unentschieden!';
+            }
+            resultDiv.textContent = message;
+            resultDiv.classList.remove('hidden');
+            endGame();
+        } else {
+            resultDiv.textContent = message;
+            resultDiv.classList.remove('hidden');
+            setTimeout(() => {
+                resultDiv.classList.add('hidden');
+                form.reset();
+            }, 7000);
+        }
+    }
+
+    function updateScoreboard() {
+        document.getElementById('playerScore').textContent = playerScore;
+        document.getElementById('goalieScore').textContent = goalieScore;
+    }
+
+    function endGame() {
+        document.getElementById('shootForm').classList.add('hidden');
+        document.getElementById('restartButton').classList.remove('hidden');
+    }
+
+    function restartGame() {
+        playerScore = 0;
+        goalieScore = 0;
+        rounds = 0;
+        updateScoreboard();
+        document.getElementById('shootForm').reset();
+        document.getElementById('result').classList.add('hidden');
+        document.getElementById('restartButton').classList.add('hidden');
+        document.getElementById('shootForm').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
